@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.util.AbstractSequentialList;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -15,7 +13,7 @@ import java.util.NoSuchElementException;
  *
  */
 
-@SuppressWarnings({ "unchecked", "unused", "hiding" })
+@SuppressWarnings({ "unchecked", "unused", "hiding", "rawtypes" })
 public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List<E>, Deque<E>, Cloneable, Serializable {
 	transient private int size = 0;
 	transient private Node<E> first = null;
@@ -211,7 +209,68 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 		return true;
 	}
 
-	
+	public void defragList() {
+		int trackFirstLoc = 0;
+		Node<E> localnode = first;
+
+		while (localnode != null) {
+			if (localnode.data == null || localnode.size == 0) {
+				if (localnode.prev != null)
+					localnode.prev.next = localnode.next;
+				if (localnode.next != null)
+					localnode.next.prev = localnode.prev;
+				Node tmp = localnode;
+				localnode = localnode.next;
+
+				// reconfigure first and last nodes
+				if (tmp == first)
+					first = localnode;
+				if (tmp == last)
+					last = tmp.prev;
+
+				tmp.data = null;
+				tmp.next = null;
+				tmp.prev = null;
+				tmp = null;
+			} else if (localnode.size != localnode.data.length) {
+				Node<E> localNxtNode = localnode.next;
+
+				// remove the next empty nodes
+				while (localNxtNode != null && localNxtNode.size == 0) {
+					localNxtNode.data = null;
+					// no explicit null check is needed, we already came from
+					// there
+					localNxtNode.prev.next = localNxtNode.next;
+
+					if (localNxtNode.next != null)
+						localNxtNode.next.prev = localNxtNode.prev;
+					// reconfigure the last node
+					if (localNxtNode == last) {
+						last = localNxtNode.prev;
+					}
+
+					Node tmp = localNxtNode;
+					localNxtNode = localNxtNode.next;
+					tmp.next = null;
+					tmp.prev = null;
+					tmp = null;
+
+				}
+				// current node is the last node, leave it as it is
+				if (localNxtNode == null)
+					break;
+
+				// copy data to current node from next node
+				trackFirstLoc = 0;
+
+			}
+		}
+	}
+
+	public boolean remove(Object paramObject) {
+
+		return false;
+	}
 
 	private class Node<E> {
 		Object[] data;
@@ -244,109 +303,5 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 				prev.next = this;
 
 		}
-	}
-
-
-
-	@Override
-	public boolean offerFirst(E paramE) {
-		// TODO FIXME
-		return false;
-	}
-
-	@Override
-	public boolean offerLast(E paramE) {
-		// TODO FIXME
-		return false;
-	}
-
-	@Override
-	public E pollFirst() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public E pollLast() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public E peekFirst() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public E peekLast() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public boolean removeFirstOccurrence(Object paramObject) {
-		// TODO FIXME
-		return false;
-	}
-
-	@Override
-	public boolean removeLastOccurrence(Object paramObject) {
-		// TODO FIXME
-		return false;
-	}
-
-	@Override
-	public boolean offer(E paramE) {
-		// TODO FIXME
-		return false;
-	}
-
-	@Override
-	public E remove() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public E poll() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public E element() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public E peek() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public void push(E paramE) {
-		// TODO FIXME
-		
-	}
-
-	@Override
-	public E pop() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public Iterator<E> descendingIterator() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public ListIterator<E> listIterator(int paramInt) {
-		// TODO FIXME
-		return null;
 	}
 }
