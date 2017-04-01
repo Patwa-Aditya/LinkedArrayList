@@ -10,16 +10,17 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 /**
- * @author dinesh
+ * @author Dinesh Saini
+ * @version 0.2
  *
  */
+
+@SuppressWarnings({ "unchecked", "unused", "hiding" })
 public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List<E>, Deque<E>, Cloneable, Serializable {
 	transient private int size = 0;
 	transient private Node<E> first = null;
 	transient private Node<E> last = null;
-	private transient int bufferSize = 25;
-	private transient int fSize = 0;
-	private transient int lSize = 0;
+	private transient int bufferSize = 512;
 	private static final long serialVersionUID = 123456789L;
 
 	public LinkedArrayList() {
@@ -31,12 +32,12 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 
 	public LinkedArrayList(Collection<? extends E> paramCollection) {
 		this();
-		addAll(paramCollection); // FIXME
+		addAll(paramCollection); // TODO FIXME
 	}
 
 	public LinkedArrayList(int bufferSize, Collection<? extends E> paramCollection) {
 		this(bufferSize);
-		addAll(paramCollection); // FIXME
+		addAll(paramCollection); // TODO FIXME
 	}
 
 	public int size() {
@@ -53,62 +54,57 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 
 	private void linkFirst(E paramE) {
 		if (first == null) {
-			Node<E> node = new Node<E>(null, bufferSize, null);
-			first = last = node;
-			fSize = 0; // Reset if wrongly set
-			node.data[fSize++] = paramE;
+			first = last = new Node<E>(null, bufferSize, null);
+			first.data[first.size++] = paramE;
 			++size;
 		} else if (first.data == null) { // It will never exists, only when, if
 											// somehow user set data with null
 			first.data = new Object[bufferSize];
-			fSize = 0; // reset size
-			first.data[fSize++] = paramE;
+			first.size = 0; // reset size
+			first.data[first.size++] = paramE;
 			++size;
-		} else if (first.data.length == fSize) {// first node is full, then we
-												// need a new one
-			Node<E> node = new Node<E>(null, bufferSize, first);
-			fSize = 0; // reset size for new node
-			node.data[fSize++] = paramE;
+		} else if (first.data.length == first.size) {// first node is full, then
+														// we need a new one
+			first = new Node<E>(null, bufferSize, first);
+			first.data[first.size++] = paramE;
 			++size;
 		} else {
-			first.data[fSize++] = paramE;
+			first.data[first.size++] = paramE;
 			++size;
 		}
 	}
 
 	private void linkLast(E paramE) {
 		if (last == null) {
-			Node<E> node = new Node<E>(null, bufferSize, null);
-			first = last = node;
-			lSize = 0; // Reset if wrongly set
-			node.data[lSize++] = paramE;
+			first = last = new Node<E>(null, bufferSize, null);
+			last.data[last.size++] = paramE;
 			++size;
 		} else if (last.data == null) { // It will never exists, only when, if
 										// somehow user set data with null
 			last.data = new Object[bufferSize];
-			lSize = 0; // reset size
-			last.data[lSize++] = paramE;
+			last.size = 0; // reset size
+			last.data[last.size++] = paramE;
 			++size;
-		} else if (last.data.length == lSize) {// Last node is full, then we
-												// need a new one
-			Node<E> node = new Node<E>(last, bufferSize, null);
-			lSize = 0; // reset size for new node
-			node.data[lSize++] = paramE;
+		} else if (last.data.length == last.size) {// Last node is full, then we
+													// need a new one
+			last = new Node<E>(last, bufferSize, null);
+			last.data[last.size++] = paramE;
 			++size;
 		} else {
-			last.data[lSize++] = paramE;
+			last.data[last.size++] = paramE;
 			++size;
 		}
 	}
 
-	void linkBefore(E paramE, Node<E> paramNode) { // TODO FIXME
+	void linkBefore(E paramE, Node<E> paramNode) {
+		// TODO FIXME
 		throw new UnsupportedOperationException("Linking in between is not supported in " + this.getClass().getName());
 	}
 
 	private E unlinkFirst(Node<E> paramNode) {
 		if (size == 0 || first == null) {
 			throw new NoSuchElementException();
-		} else if (first.data == null || fSize == 0) {
+		} else if (first.data == null || first.size == 0) {
 			if (first.next == null) { // that was the last node with no element,
 										// raise exception after deleting it
 				first.data = null;
@@ -122,21 +118,106 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 				localNode.data = null; // free the storage
 				localNode.next = null; // delete reference to current list also
 				localNode = null; // delete node
-				unlinkFirst(first); // doit recursive until we don't find any
-									// element
+				return unlinkFirst(first); // doit recursive until we don't find
+											// any
+				// element
 			}
 		} else {
-			// TODO
-
+			E data = (E) first.data[--first.size];
+			first.data[first.size] = null;
+			size--;
+			return data;
 		}
-		return null;
 	}
 
-	@SuppressWarnings({ "unchecked", "unused", "hiding" })
+	private E unlinkLast(Node<E> paramNode) {
+		if (size == 0 || last == null) {
+			throw new NoSuchElementException();
+		} else if (last.data == null || last.size == 0) {
+			if (last.prev == null) { // that was the last node with no element,
+										// raise exception after deleting it
+				last.data = null;
+				last = null;
+				throw new NoSuchElementException();
+			} else { // this condition should never happens
+				last.prev.next = null; // delete current reference to last
+										// node
+				Node<E> localNode = last;
+				last = last.prev; // move to prev Node
+				localNode.data = null; // free the storage
+				localNode.prev = null; // delete reference to current list also
+				localNode = null; // delete node
+				return unlinkLast(last); // doit recursive until we don't find
+											// any
+				// element
+			}
+		} else {
+			E data = (E) last.data[--last.size];
+			last.data[last.size] = null;
+			size--;
+			return data;
+		}
+	}
+
+	E unlink(Node<E> paramNode) {
+		// TODO FIXME
+		throw new UnsupportedOperationException();
+	}
+
+	public E getFirst() {
+		if (first == null)
+			throw new NoSuchElementException();
+		if (first.data != null && first.size > 0)
+			return (E) first.data[first.size - 1];
+		else {
+			// FIXME
+		}
+		throw new NoSuchElementException();
+	}
+
+	public E getLast() {
+		if (last == null)
+			throw new NoSuchElementException();
+		if (last.data != null && last.size > 0)
+			return (E) last.data[last.size - 1];
+		else {
+			// FIXME
+		}
+		throw new NoSuchElementException();
+	}
+
+	public E removeFirst() {
+		return (E) unlinkFirst(first);
+	}
+
+	public E removeLast() {
+		return (E) unlinkLast(last);
+	}
+
+	public void addFirst(E paramE) {
+		linkFirst(paramE);
+	}
+
+	public void addLast(E paramE) {
+		linkLast(paramE);
+	}
+
+	public boolean contains(Object paramObject) {
+		return indexOf(paramObject) != -1;
+	}
+
+	public boolean add(E paramE) {
+		linkLast(paramE);
+		return true;
+	}
+
+	
+
 	private class Node<E> {
 		Object[] data;
 		Node<E> next;
 		Node<E> prev;
+		int size = 0;
 
 		private Node() {
 		}
@@ -149,11 +230,12 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 			if (prev != null)
 				prev.next = this;
 			this.data = new Object[length];
-
+			this.size = 0;
 		}
 
 		Node(Node<E> prev, E[] data, Node<E> next) {
 			this.data = data;
+			this.size = 0;
 			this.next = next;
 			this.prev = prev;
 			if (next != null)
@@ -162,50 +244,9 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 				prev.next = this;
 
 		}
-
 	}
 
-	@Override
-	public void addFirst(E paramE) {
-		// TODO FIXME
-		
-	}
 
-	@Override
-	public void addLast(E paramE) {
-		// TODO FIXME
-		
-	}
-
-	@Override
-	public Iterator<E> descendingIterator() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public E element() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public E getFirst() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public E getLast() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public boolean offer(E paramE) {
-		// TODO FIXME
-		return false;
-	}
 
 	@Override
 	public boolean offerFirst(E paramE) {
@@ -220,7 +261,13 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 	}
 
 	@Override
-	public E peek() {
+	public E pollFirst() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E pollLast() {
 		// TODO FIXME
 		return null;
 	}
@@ -238,25 +285,43 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 	}
 
 	@Override
+	public boolean removeFirstOccurrence(Object paramObject) {
+		// TODO FIXME
+		return false;
+	}
+
+	@Override
+	public boolean removeLastOccurrence(Object paramObject) {
+		// TODO FIXME
+		return false;
+	}
+
+	@Override
+	public boolean offer(E paramE) {
+		// TODO FIXME
+		return false;
+	}
+
+	@Override
+	public E remove() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
 	public E poll() {
 		// TODO FIXME
 		return null;
 	}
 
 	@Override
-	public E pollFirst() {
+	public E element() {
 		// TODO FIXME
 		return null;
 	}
 
 	@Override
-	public E pollLast() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public E pop() {
+	public E peek() {
 		// TODO FIXME
 		return null;
 	}
@@ -268,33 +333,15 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 	}
 
 	@Override
-	public E remove() {
+	public E pop() {
 		// TODO FIXME
 		return null;
 	}
 
 	@Override
-	public E removeFirst() {
+	public Iterator<E> descendingIterator() {
 		// TODO FIXME
 		return null;
-	}
-
-	@Override
-	public boolean removeFirstOccurrence(Object paramObject) {
-		// TODO FIXME
-		return false;
-	}
-
-	@Override
-	public E removeLast() {
-		// TODO FIXME
-		return null;
-	}
-
-	@Override
-	public boolean removeLastOccurrence(Object paramObject) {
-		// TODO FIXME
-		return false;
 	}
 
 	@Override
@@ -302,5 +349,4 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 		// TODO FIXME
 		return null;
 	}
-
 }
