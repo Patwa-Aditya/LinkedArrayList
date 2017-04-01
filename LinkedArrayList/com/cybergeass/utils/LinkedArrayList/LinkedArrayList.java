@@ -1,47 +1,13 @@
+package com.cybergeass.utils.LinkedArrayList;
+
 import java.io.Serializable;
 import java.util.AbstractSequentialList;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
-
-/**
- * 
- * Lists are time and space consuming and has lot of cache miss ratio If Lists
- * are very big then it is difficult to utilize RAM and parallism <br>
- * Arrays are good solution but require continuous memory <br>
- * If Arrays are very large then continous mem is a problem dynamic size growing
- * is also a problem <br>
- * 
- * So, combining arrays with lists is good solution <br>
- * It will be a List of Arrays, User specify size of array in each node <br>
- * Each Node of list will contain a single Array, so memory wasting in pointer
- * managing will reduce significantly <br>
- * 
- * Class Itself will manage all the arrays in all the nodes, So on higher level
- * All arrays will be accessed as a single array but only storing way will
- * change.. <br>
- * +-----------------------+-+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+-------------
- * ---------<br>
- * |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * &nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
- * <br>
- * | Array ref of size [n]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
- * -+----+---> nxt node<br>
- * |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * &nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
- * <br>
- * +------------------------+-+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+------------------
- * ----<br>
- */
 
 public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List<E>, Deque<E>, Cloneable, Serializable {
 	transient private int size = 0;
@@ -144,7 +110,7 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 				first.data = null;
 				first = null;
 				throw new NoSuchElementException();
-			} else { //this condition should never happens
+			} else { // this condition should never happens
 				first.next.prev = null; // delete current reference to first
 										// node
 				Node<E> localNode = first;
@@ -156,8 +122,8 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 									// element
 			}
 		} else {
-//TODO
-			
+			// TODO
+
 		}
 		return null;
 	}
@@ -193,6 +159,144 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 
 		}
 
+	}
+
+	@Override
+	public void addFirst(E paramE) {
+		// TODO FIXME
+		
+	}
+
+	@Override
+	public void addLast(E paramE) {
+		// TODO FIXME
+		
+	}
+
+	@Override
+	public Iterator<E> descendingIterator() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E element() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E getFirst() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E getLast() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public boolean offer(E paramE) {
+		// TODO FIXME
+		return false;
+	}
+
+	@Override
+	public boolean offerFirst(E paramE) {
+		// TODO FIXME
+		return false;
+	}
+
+	@Override
+	public boolean offerLast(E paramE) {
+		// TODO FIXME
+		return false;
+	}
+
+	@Override
+	public E peek() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E peekFirst() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E peekLast() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E poll() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E pollFirst() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E pollLast() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E pop() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public void push(E paramE) {
+		// TODO FIXME
+		
+	}
+
+	@Override
+	public E remove() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E removeFirst() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public boolean removeFirstOccurrence(Object paramObject) {
+		// TODO FIXME
+		return false;
+	}
+
+	@Override
+	public E removeLast() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public boolean removeLastOccurrence(Object paramObject) {
+		// TODO FIXME
+		return false;
+	}
+
+	@Override
+	public ListIterator<E> listIterator(int paramInt) {
+		// TODO FIXME
+		return null;
 	}
 
 }
