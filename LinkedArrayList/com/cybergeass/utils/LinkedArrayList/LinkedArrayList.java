@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+/**
+ * @author dinesh
+ *
+ */
 public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List<E>, Deque<E>, Cloneable, Serializable {
 	transient private int size = 0;
 	transient private Node<E> first = null;
