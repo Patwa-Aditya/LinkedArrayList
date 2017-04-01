@@ -1,5 +1,3 @@
-package genex.utils;
-
 import java.io.Serializable;
 import java.util.AbstractSequentialList;
 import java.util.Collection;
