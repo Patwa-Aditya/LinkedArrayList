@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.AbstractSequentialList;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -245,7 +247,7 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 					if (localNxtNode.next != null)
 						localNxtNode.next.prev = localNxtNode.prev;
 					// reconfigure the last node
-					if (localNxtNode == last) {
+					else if (localNxtNode == last) {
 						last = localNxtNode.prev;
 					}
 
@@ -263,6 +265,71 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 				// copy data to current node from next node
 				trackFirstLoc = 0;
 
+				// process the odd 5 spaces
+				switch ((localnode.data.length - localnode.size) % 5) {
+				case 4:
+					if (localNxtNode.size > 0) {
+						localnode.data[localnode.size++] = localNxtNode.data[trackFirstLoc++];
+						localNxtNode.size--;
+					} else {
+						continue;
+					}
+				case 3:
+					if (localNxtNode.size > 0) {
+						localnode.data[localnode.size++] = localNxtNode.data[trackFirstLoc++];
+						localNxtNode.size--;
+					} else {
+						continue;
+					}
+				case 2:
+					if (localNxtNode.size > 0) {
+						localnode.data[localnode.size++] = localNxtNode.data[trackFirstLoc++];
+						localNxtNode.size--;
+					} else {
+						continue;
+					}
+				case 1:
+					if (localNxtNode.size > 0) {
+						localnode.data[localnode.size++] = localNxtNode.data[trackFirstLoc++];
+						localNxtNode.size--;
+					} else {
+						continue;
+					}
+				}
+
+				// process the 5 spaces in each iteration
+				while (localnode.size < localnode.data.length && localNxtNode.size < localNxtNode.data.length) {
+					switch ((localNxtNode.data.length - localNxtNode.size) % 5) {
+					case 0:
+						localnode.data[localnode.size++] = localNxtNode.data[trackFirstLoc++];
+						localNxtNode.size--;
+					case 4:
+						localnode.data[localnode.size++] = localNxtNode.data[trackFirstLoc++];
+						localNxtNode.size--;
+					case 3:
+						localnode.data[localnode.size++] = localNxtNode.data[trackFirstLoc++];
+						localNxtNode.size--;
+					case 2:
+						localnode.data[localnode.size++] = localNxtNode.data[trackFirstLoc++];
+						localNxtNode.size--;
+					case 1:
+						localnode.data[localnode.size++] = localNxtNode.data[trackFirstLoc++];
+						localNxtNode.size--;
+					}
+				}
+
+				if (localnode.size == localnode.data.length) {
+					localnode = localNxtNode;
+					if (localnode.size != 0 && trackFirstLoc != 0) {
+						for (int i = 0; i < localnode.size; i++) {
+							localnode.data[i] = localnode.data[trackFirstLoc + i];
+						}
+						for (int i = localnode.size; i < localnode.size + trackFirstLoc
+								&& (localnode.size + trackFirstLoc) < localnode.data.length; i++) {
+							localnode.data[i] = null;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -303,5 +370,107 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 				prev.next = this;
 
 		}
+	}
+
+	@Override
+	public Iterator<E> descendingIterator() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E element() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public boolean offer(E e) {
+		// TODO FIXME
+		return false;
+	}
+
+	@Override
+	public boolean offerFirst(E e) {
+		// TODO FIXME
+		return false;
+	}
+
+	@Override
+	public boolean offerLast(E e) {
+		// TODO FIXME
+		return false;
+	}
+
+	@Override
+	public E peek() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E peekFirst() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E peekLast() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E poll() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E pollFirst() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E pollLast() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public E pop() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public void push(E e) {
+		// TODO FIXME
+		
+	}
+
+	@Override
+	public E remove() {
+		// TODO FIXME
+		return null;
+	}
+
+	@Override
+	public boolean removeFirstOccurrence(Object o) {
+		// TODO FIXME
+		return false;
+	}
+
+	@Override
+	public boolean removeLastOccurrence(Object o) {
+		// TODO FIXME
+		return false;
+	}
+
+	@Override
+	public ListIterator<E> listIterator(int index) {
+		// TODO FIXME
+		return null;
 	}
 }
