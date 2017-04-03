@@ -140,7 +140,7 @@ public class LinkedArrayList<E> extends AbstractSequentialList<E>implements List
 
 		private Node() {
 		}
-
+//constructer
 		Node(Node<E> prev, int length, Node<E> next) {
 			this.next = next;
 			this.prev = prev;
